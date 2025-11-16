@@ -1,6 +1,6 @@
-🔍 #Java Port Scanner
+# 🔍 Java Port Scanner
 
-A fast, lightweight, multi-threaded TCP port scanner written in Java.
+*A fast, lightweight, multi-threaded TCP port scanner written in Java.*
 
 This project is a foundational networking tool designed to explore TCP connectivity, service discovery, and basic protocol interaction. It is built as a standalone mini-project to exercise socket programming, concurrency, timeout handling, and clean CLI design in Java.
 
