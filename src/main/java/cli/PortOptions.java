@@ -3,7 +3,9 @@ package cli;
 import picocli.CommandLine;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PortOptions {
 
@@ -32,36 +34,44 @@ public class PortOptions {
         return parsePorts(ports);
     }
 
-    private List<Integer> parsePorts(String input) {
-        List<Integer> result = new ArrayList<>();
+    private List<Integer> parsePorts(String input) throws IllegalArgumentException{
+        Set<Integer> portList = new HashSet<>();
         String[] parts = input.split(",");
         for (String part : parts) {
             part = part.trim();
             if (part.contains("-")) {
                 String[] range = part.split("-", 2);
-                int start = Integer.parseInt(range[0].trim());
-                int end = Integer.parseInt(range[1].trim());
+                try{
 
-                if (start < 1 || end > 65535 || start > end) {
-                    throw new IllegalArgumentException("Invalid port range: " + part);
-                }
+                    int start = Integer.parseInt(range[0].trim());
+                    int end = Integer.parseInt(range[1].trim());
 
-                for (int i = start; i <= end; i++) {
-                    if (!result.contains(i)) {
-                        result.add(i);
+                    if(start < 1 || end > 65535 || start > end){
+                        throw new IllegalArgumentException("Invalid port range: " + part);
                     }
+
+                    for (int i = start; i <= end; i++) {
+                        portList.add(i);
+                    }
+                } catch(NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid port range format: "
+                    + part);
                 }
-            } else {
-                int port = Integer.parseInt(part);
-                if (port < 1 || port > 65535) {
-                    throw new IllegalArgumentException("Invalid port: " + port);
-                }
-                if (!result.contains(port)) {
-                    result.add(port);
+            } else{
+                try{
+
+                    int port = Integer.parseInt(part);
+                    if(port < 1 || port > 65535){
+                        throw new IllegalArgumentException("Invalid port: " + port);
+                    }
+                    portList.add(port);
+                } catch(NumberFormatException e){
+                    throw new IllegalArgumentException("Invalid port range format: "
+                            + part);
                 }
             }
         }
-        return result;
+        return new ArrayList<>(portList);
     }
 
 
