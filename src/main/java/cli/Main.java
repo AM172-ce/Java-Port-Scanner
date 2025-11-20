@@ -29,10 +29,10 @@ public class Main implements Callable<Integer> {
     private List<String> targets = new ArrayList<>();
 
     @CommandLine.Mixin
-    private PortOptions portOptions = new PortOptions();
+    private final PortOptions portOptions = new PortOptions();
 
     @CommandLine.Mixin
-    private TimingOptions timingOptions = new TimingOptions();
+    private final TimingOptions timingOptions = new TimingOptions();
 
     private final List<ScanResult> openPortResults = new ArrayList<>();
 
@@ -58,8 +58,15 @@ public class Main implements Callable<Integer> {
         }
 
         List<InetAddress> expandedTargets = IpRangeParser.parseTargets(targets);
-        List<Integer> ports = portOptions.getParsedPorts();
-
+        List<Integer> portList;
+        try{
+            portList = portOptions.getParsedPorts();
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error:" + e.getMessage());
+            System.err.println("port(s) should not be less than 1 or greater than 65535");
+            System.err.println("\nUse --help for more information");
+            return 1;
+        }
         PortScanner portScanner = new PortScanner(timingPolicy);
 
         // Setup shutdown handler
@@ -69,11 +76,11 @@ public class Main implements Callable<Integer> {
 
         PortScanDisplay display = new PortScanDisplay(openPortResults);
         // Print scan info
-        display.printScanInfo(expandedTargets, ports, timingPolicy);
+        display.printScanInfo(expandedTargets, portList, timingPolicy);
 
         // Start scan
         long scanStart = System.currentTimeMillis();
-        List<ScanResult> results = portScanner.scan(expandedTargets, ports);
+        List<ScanResult> results = portScanner.scan(expandedTargets, portList);
         long scanDuration = System.currentTimeMillis() - scanStart;
 
         // Unregister shutdown handler (normal exit)
