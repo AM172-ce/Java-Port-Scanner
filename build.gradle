@@ -86,3 +86,14 @@ tasks.named('jar') {
 tasks.named('assemble') {
     dependsOn shadowJar
 }
+
+tasks.register('releasePackage', Zip) {
+    from('build/libs') {
+        include 'Java-Port-Scanner-0.1.SNAPSHOT.jar'
+    }
+    from('scripts') {
+        include 'run.bat'
+    }
+    into('Java-Port-Scanner')
+    archiveFileName = "Java-Port-Scanner-0.1-windows-.zip"
+}
