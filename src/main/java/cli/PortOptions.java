@@ -13,13 +13,16 @@ public class PortOptions {
             names = {"-p", "--ports"},
             description = "Ports (e.g. 22,80,1000-1010, or 1-5,7-12)"
     )
+    @SuppressWarnings("unused")
     private String ports;
 
     @CommandLine.Option(
             names = {"--top-ports"},
             description = "top most common ports"
     )
+    @SuppressWarnings("unused")
     private boolean topPorts;
+
 
     /**
      * Parse the port specification into a list of integers

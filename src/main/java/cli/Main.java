@@ -26,7 +26,7 @@ public class Main implements Callable<Integer> {
             paramLabel = "TARGET",
             description = "Target(s) - IP, hostname, range, or CIDR"
     )
-    private List<String> targets = new ArrayList<>();
+    private final List<String> targets = new ArrayList<>();
 
     @CommandLine.Mixin
     private final PortOptions portOptions = new PortOptions();
@@ -43,7 +43,7 @@ public class Main implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        if (targets == null || targets.isEmpty()) {
+        if (targets.isEmpty()) {
             System.err.println("Error: No targets specified");
             System.err.println("Usage: scannerj [OPTIONS] <target(s)>");
             System.err.println("\nUse --help for more information");
